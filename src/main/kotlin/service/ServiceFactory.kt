@@ -2,15 +2,13 @@ package service
 
 import com.google.gson.Gson
 import com.google.gson.JsonDeserializer
-import model.IGUser
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory
 import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.logging.HttpLoggingInterceptor
 import com.google.gson.GsonBuilder
-import model.IGImagePost
-import model.IGTimelineMedia
+import model.*
 
 
 class ServiceFactory {
@@ -28,11 +26,19 @@ class ServiceFactory {
             httpClient.addInterceptor(interceptor)
 
 
+            val imageTextsDeserializer = JsonDeserializer { json, typeOfT, context ->
+                val mediaPostContent = json?.asJsonObject?.get("node")
+                Gson().fromJson(mediaPostContent!!, IGImageText::class.java)
+            }
 
             val imageDeserializer = JsonDeserializer { json, typeOfT, context ->
                 val mediaPostContent = json?.asJsonObject?.get("node")
-                Gson().fromJson(mediaPostContent!!, IGImagePost::class.java)
+                val gBuilderTemp = GsonBuilder()
+                gBuilderTemp.registerTypeAdapter(IGImageText::class.java, imageTextsDeserializer)
+                gBuilderTemp.create().fromJson(mediaPostContent!!, IGImagePost::class.java)
             }
+
+
 
             val graphQLDeserializer = JsonDeserializer { json, typeOfT, context ->
                 val userContent = json?.asJsonObject?.get("graphql")?.asJsonObject?.get("user")
@@ -42,7 +48,10 @@ class ServiceFactory {
                 gBuilderTemp.create().fromJson(userContent!!, IGUser::class.java)
             }
 
+
+
             val gsonBuilder = GsonBuilder()
+            gsonBuilder.registerTypeAdapter(IGImageText::class.java, imageTextsDeserializer)
             gsonBuilder.registerTypeAdapter(IGUser::class.java, graphQLDeserializer)
             gsonBuilder.registerTypeAdapter(IGImagePost::class.java, imageDeserializer)
 

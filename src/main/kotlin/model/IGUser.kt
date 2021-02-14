@@ -25,4 +25,12 @@ class IGUser(
     val igTimelineMedia: IGTimelineMedia
 ) {
 
+    fun writeToCsv(): String {
+        return "$id;$username;$followerCount;$followingCount;$pictureUrl;$category;$isVerified;$isPrivate;${igTimelineMedia.count}"
+    }
+
+    companion object {
+        val HEADER = "id;username;followerCount;followingCount;pictureUrl;category;isVerified;isPrivate;postCount;"
+    }
+
 }

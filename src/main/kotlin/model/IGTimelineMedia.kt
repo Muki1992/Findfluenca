@@ -21,6 +21,8 @@ class IGPageInfo(
 )
 
 class IGImagePost(
+    @SerializedName("shortcode")
+    val shortcode: String,
     @SerializedName("display_url")
     val pictureUrl: String,
     @SerializedName("is_video")

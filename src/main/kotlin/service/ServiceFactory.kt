@@ -9,6 +9,10 @@ import retrofit2.converter.gson.GsonConverterFactory
 import okhttp3.logging.HttpLoggingInterceptor
 import com.google.gson.GsonBuilder
 import model.*
+import java.net.InetSocketAddress
+import java.net.Proxy
+import java.net.SocketAddress
+import java.util.concurrent.TimeUnit
 
 
 class ServiceFactory {
@@ -24,6 +28,9 @@ class ServiceFactory {
             val interceptor = HttpLoggingInterceptor()
             interceptor.level = HttpLoggingInterceptor.Level.BASIC
             httpClient.addInterceptor(interceptor)
+            httpClient.readTimeout(60, TimeUnit.SECONDS);
+            httpClient.connectTimeout(60, TimeUnit.SECONDS);
+//            httpClient.proxy( Proxy(Proxy.Type.HTTP, InetSocketAddress("182.253.172.222", 8080)))
 
 
             val imageTextsDeserializer = JsonDeserializer { json, typeOfT, context ->
@@ -66,5 +73,7 @@ class ServiceFactory {
 
     }
 
+// 2003:e7:f74f:af01:f532:f6b7:d0ad:5ba1
 
+// 2003:e7:f74f:d601:8d59:a070:a6b8:7dc
 }
